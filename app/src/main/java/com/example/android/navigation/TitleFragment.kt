@@ -17,12 +17,12 @@
 package com.example.android.navigation
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.android.navigation.databinding.FragmentTitleBinding
 
 class TitleFragment : Fragment() {
@@ -33,6 +33,22 @@ class TitleFragment : Fragment() {
         binding.playButton.setOnClickListener (
                 Navigation.createNavigateOnClickListener(R.id.action_titleFragment_to_gameFragment)
         )
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    // прихуячиваем менюшку к хедеру, три точечки
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        // оформляем при клике меню в виде простого белого квадратика с надписью about
+        inflater?.inflate(R.menu.overflow_menu, menu)
+    }
+
+    // вот тут пока не понятно, но вроде как это обработчик клика на меню (три точки)
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        // возвращает тру, если NavigationUI.onNavDestinationSelected тоже тру (то есть есть вьюха выбранного элемента меню), иначе вернет что то там у родителя
+        return NavigationUI.onNavDestinationSelected(item!!,
+                view!!.findNavController())
+                || super.onOptionsItemSelected(item)
     }
 }
