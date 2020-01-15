@@ -48,7 +48,8 @@
         tools:layout="@layout/fragment_game_over" >
         <action
             android:id="@+id/action_gameOverFragment_to_gameFragment"
-            app:destination="@id/gameFragment" />
+            app:destination="@id/gameFragment"
+            app:popUpTo="@+id/gameFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameWonFragment"
@@ -57,6 +58,7 @@
         tools:layout="@layout/fragment_game_won" >
         <action
             android:id="@+id/action_gameWonFragment_to_gameFragment"
-            app:destination="@id/gameFragment" />
+            app:destination="@id/gameFragment"
+            app:popUpTo="@+id/gameFragment" />
     </fragment>
 </navigation>

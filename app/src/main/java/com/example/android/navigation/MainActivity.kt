@@ -31,6 +31,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         @Suppress("UNUSED_VARIABLE")
+        // создаем привязку активити к данному классу, чтобы не париться с findById и тд
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        // находим контроллер навигации активити
+        val navController = this.findNavController(R.id.myNavHostFragment)
+        // выводим кнопку назад в хедере и привязываем её к контроллеру
+        NavigationUI.setupActionBarWithNavController(this, navController)
+    }
+    // переписываем обработчик нажатия на назад чтобы отработал контроллер
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.myNavHostFragment)
+        return navController.navigateUp()
     }
 }
