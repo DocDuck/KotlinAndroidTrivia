@@ -45,10 +45,50 @@ class GameWonFragment : Fragment() {
         binding.nextMatchButton.setOnClickListener {
             it.findNavController().navigate(R.id.action_gameWonFragment_to_gameFragment)
         }
+        // Подключаем меню к этому фрагменту
+        setHasOptionsMenu(true)
+
         val args = GameWonFragmentArgs.fromBundle(arguments!!)
         Toast.makeText(context,
                 "NumCorrect: ${args.numCorrect}, NumQuestions: ${args.numQuestions}",
                 Toast.LENGTH_LONG).show()
         return binding.root
+    }
+    // Метод, который берет аргументы этого фрагмента (которые пришли из GameFragment) и кладет их в Intent для экспорта наружу в другие приложения / другой Activity
+    private fun getShareIntent() : Intent {
+        val args = GameWonFragmentArgs.fromBundle(arguments!!)
+        return ShareCompat.IntentBuilder.from(activity)
+                .setText(getString(R.string.share_success_text, args.numCorrect, args.numQuestions))
+                .setType("text/plain")
+                .intent
+        // Альтернативный способ создать Intent через new Intent
+        // val shareIntent = Intent(Intent.ACTION_SEND)
+        //        shareIntent.setType("text/plain")
+        //                .putExtra(Intent.EXTRA_TEXT, getString(R.string.share_success_text, args.numCorrect, args.numQuestions))
+        //        return shareIntent
+    }
+
+    //  Метод startActivity наподобие render() реакта - вызывает соответствующий активити через объект - упаковку Intent, который в него передается параметром
+    private fun shareSuccess() {
+        startActivity(getShareIntent())
+    }
+
+    // Создаем меню и раздуваем в нем фрагмент winner_menu
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.winner_menu, menu)
+        // check if the activity resolves
+        if (null == getShareIntent().resolveActivity(activity!!.packageManager)) {
+            // hide the menu item if it doesn't resolve
+            menu?.findItem(R.id.share)?.setVisible(false)
+        }
+    }
+
+    // Call the shareSuccess method when the item id matches R.id.share
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            R.id.share -> shareSuccess()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
