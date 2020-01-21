@@ -24,23 +24,33 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.android.navigation.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    // Это переменные в которые при инициализации приложухи потом прилетят лейаут сайдбара и конфигурации шапки
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var appBarConfiguration : AppBarConfiguration
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         @Suppress("UNUSED_VARIABLE")
         // создаем привязку активити к данному классу, чтобы не париться с findById и тд
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-        // находим контроллер навигации активити
+        // получаем объект контроллера навигации активити
         val navController = this.findNavController(R.id.myNavHostFragment)
-        // выводим кнопку назад в хедере и привязываем её к контроллеру
-        NavigationUI.setupActionBarWithNavController(this, navController)
+        // инициализируем слайдер при создании активити
+        drawerLayout = binding.drawerLayout
+        // выводим кнопку назад в хедере и привязываем её к контроллеру, к этой связке добавляем сайдбар
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
+        // Привязываем сайдбар к навигационному графу
+        NavigationUI.setupWithNavController(binding.navView, navController)
     }
     // переписываем обработчик нажатия на назад чтобы отработал контроллер
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.myNavHostFragment)
-        return navController.navigateUp()
+        // теперь при клике на стрелочку в хедере сайдбар-меню будет закрываться
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
     }
 }
