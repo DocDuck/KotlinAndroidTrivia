@@ -46,6 +46,14 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
         // Привязываем сайдбар к навигационному графу
         NavigationUI.setupWithNavController(binding.navView, navController)
+        // Навешиваю навигационный обработчик, чтобы слайдер работал только на стартовой странице
+        navController.addOnDestinationChangedListener { nc: NavController, nd: NavDestination, args: Bundle? ->
+            if (nd.id == nc.graph.startDestination) {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            } else {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
+        }
     }
     // переписываем обработчик нажатия на назад чтобы отработал контроллер
     override fun onSupportNavigateUp(): Boolean {
